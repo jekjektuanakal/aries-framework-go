@@ -55,6 +55,7 @@ const (
 	jsonldProofPurpose   = "proofPurpose"
 
 	// various public key encodings.
+	jsonldBlockchainAccountId = "blockchainAccountId"
 	jsonldPublicKeyBase58    = "publicKeyBase58"
 	jsonldPublicKeyMultibase = "publicKeyMultibase"
 	jsonldPublicKeyHex       = "publicKeyHex"
@@ -1479,6 +1480,10 @@ func populateRawVerificationMethod(context, didID, baseURI string,
 		if err != nil {
 			return nil, err
 		}
+	} else if vm.Type == "EcdsaSecp256k1RecoveryMethod2020" {
+		rawVM[jsonldBlockchainAccountId] = string(vm.Value)
+	} else if vm.Type == "EcdsaSecp256k1VerificationKey2019" {
+		rawVM[jsonldPublicKeyHex] = hex.EncodeToString(vm.Value)
 	} else if vm.Value != nil {
 		rawVM[jsonldPublicKeyBase58] = base58.Encode(vm.Value)
 	}
